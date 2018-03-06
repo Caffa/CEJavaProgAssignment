@@ -4,8 +4,6 @@ package com.example.assignment; /**
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class ProcessGraphNode extends Thread{
@@ -128,24 +126,16 @@ public class ProcessGraphNode extends Thread{
         Process p = null;
 
 
-        if(getInputFile().equals("stdin")){
-            //what to do?
-            OutputStream stdin = p.getOutputStream();
-            File sI = new File(String.valueOf(stdin));
-            builder.redirectInput(sI);
-        }else{
+        if(!getInputFile().equals("stdin")){
             builder.redirectInput(this.inputFile);
+        }else{
+            //what to do for stdin
         }
 
-        if(getOutputFile().equals("stdout")){
-            //what to do?
-            InputStream stdout = p.getInputStream();
-
-            File sO = new File(String.valueOf(stdout));
-
-            builder.redirectOutput(sO);
-        }else{
+        if(!getOutputFile().equals("stdout")){
             builder.redirectOutput(this.outputFile);
+        }else{
+            //what to do for stdout
         }
 
         try {
