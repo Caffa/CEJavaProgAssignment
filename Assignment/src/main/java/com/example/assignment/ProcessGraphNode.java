@@ -109,7 +109,11 @@ public class ProcessGraphNode {
         return ans;
     }
 
-    // Here is a function to check all parents have been executed
+
+
+    /*
+    * Here is a function to check all parents have been executed
+    * */
     public boolean myParentExecuted() {
         boolean ans = true;
         for (ProcessGraphNode parent : this.getParents()) {
@@ -120,35 +124,3 @@ public class ProcessGraphNode {
         return ans;
     }
 }
-
-    // Here is a function to run the program
-//    public void run(ProcessBuilder pb){
-//
-//        ProcessBuilder builder = new ProcessBuilder();
-//        builder.directory = cu
-//        Process p = null;
-//
-//
-//        if(!getInputFile().equals("stdin")){
-//            builder.redirectInput(this.inputFile);
-//        }else{
-//            //what to do for stdin
-//        }
-//
-//        if(!getOutputFile().equals("stdout")){
-//            builder.redirectOutput(this.outputFile);
-//        }else{
-//            //what to do for stdout
-//        }
-//
-//        try {
-//            p = builder.start();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-
-
-//        setExecuted();
-//    }
-//}

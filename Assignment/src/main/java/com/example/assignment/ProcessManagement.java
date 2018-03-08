@@ -1,7 +1,7 @@
 /*
 *  Programming Assignment 1
-*  Author : Wang Yee Lin Pamela
-∗ ID: 1002367
+*  Author : Wang Yee Lin Pamela, Tan Jun Hui Augustine
+∗ ID: 1002367, 1002158
 ∗ Date: 03/03/2018
 *
 *
@@ -16,6 +16,8 @@ import java.util.ArrayList;
 
 public class ProcessManagement {
 
+
+
     //set the working directory
 //    private static File currentDirectory = new File("/home/jit/progassignment1/java/");
 
@@ -24,8 +26,8 @@ public class ProcessManagement {
     private static File currentDirectory = new File(myCurrentDir);
 
     //set the instructions file
-//    private static File instructionSet = new File("testproc.txt");
-    private static File instructionSet = new File("test2.txt");
+    private static File instructionSet = new File("testproc.txt");
+//    private static File instructionSet = new File("graph-file2");
 
     public static Object lock =new Object();
 
@@ -34,27 +36,18 @@ public class ProcessManagement {
         //parse the instruction file and construct a data structure, stored inside ProcessGraph class
         ParseFile.generateGraph(new File(currentDirectory + "/"+ instructionSet));
 
-        // Print the graph information
+        //fix the parent pointers
         for(ProcessGraphNode node:ProcessGraph.nodes){
             for(ProcessGraphNode child:node.getChildren()){
                 child.addParent(node);
             }
         }
+
+        // Print the graph information
         ProcessGraph.printGraph();
 
-	// WRITE YOUR CODE
-        // Using index of ProcessGraph, loop through each ProcessGraphNode, to check whether it is ready to run
-        // check if all the nodes are executed
-        // WRITE YOUR CODE
 
-
-
-
-
-
-
-
-
+        //a variable to check if all nodes are executed
         boolean allE = false;
 
         //Declare process builder outside of while loop and set it's directory
@@ -67,35 +60,29 @@ public class ProcessManagement {
             //check if all nodes are executed
             allE = areAllExecuted();
 
-            //here is a function to decide whether a node is runnable & make a list
+            //here is a function to decide whether a node is runnable & make a list of runnable nodes
             runnableNodes = setRunnables();
 
             for(ProcessGraphNode i : runnableNodes){
-                //redirect as required, as long as it isn't std.. redirect
+                //redirect as required, as long as it isn't stdin / stdout redirect
                 if(i != null && i.isRunnable()){
                     if (!((i.getInputFile().toString()).equals("stdin"))) {
-                        //added stuff for z_stdin and sample
-                        if(((i.getInputFile().toString()).equals("z_stdin"))){
-                            File zs = new File(currentDirectory + "/z_stdin.txt");
-                            pb.redirectInput(zs);
-                        }else if(((i.getInputFile().toString()).equals("sample"))){
-                            File sample = new File(currentDirectory + "/sample.txt");
-                            pb.redirectInput(sample);
-                        }else{
+
                         pb.redirectInput(i.getInputFile());
-                        }
+
                     }
                     if (!(i.getOutputFile().toString().equals("stdout"))) {
                         pb.redirectOutput(i.getOutputFile());
                     }
 
+                    //run the command
                     String[] command = {"bash","-c",i.getCommand().toString()};//curr.getCommand().toString()
                     pb.command(command);
                     try {
+                        //here is error handling
                         Process p=pb.start();
                         p.waitFor();
                         i.setExecuted();
-                        i.setNotRunable();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -104,42 +91,9 @@ public class ProcessManagement {
                 }
 
             }
-//
-//            //run node if runnable
-//            for(ProcessGraphNode i : runnableNodes){
-//                //make a thread for each
-//                //then do run for each --- this can be put in process graph node
-//                //then end?
-//                if(i != null){
-//                    i.start();
-//                }
-//
-//            }
-//
-//            for(ProcessGraphNode i : runnableNodes){
-//                //make a thread for each
-//                //then do run for each --- this can be put in process graph node
-//                //then end?
-//
-//
-//                if(i != null){
-//                    i.join();
-//                }
-//            }
-
-
-
-
-
-
-
-
-            //print basic graph
-//            ProcessGraph.printBasic();
 
         }
 
-//        System.out.println("Completed - check against output");
         // Print the graph information
         ProcessGraph.printGraph();
 
@@ -149,7 +103,9 @@ public class ProcessManagement {
     }
 
 
-
+    /*
+    * Function to check if all nodes are executed
+    * */
     private static boolean areAllExecuted() {
         boolean aE = true;
         for(ProcessGraphNode a : ProcessGraph.nodes){
@@ -159,7 +115,9 @@ public class ProcessManagement {
         }
         return aE;
     }
-
+    /*
+    * Function to return a list of all runnable (have not been executed and parents have been executed) nodes
+    * */
     private static ArrayList<ProcessGraphNode> setRunnables() {
         ArrayList<ProcessGraphNode> listToRun = new ArrayList<>();
         for(ProcessGraphNode a : ProcessGraph.nodes){
