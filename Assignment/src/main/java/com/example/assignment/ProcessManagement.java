@@ -25,7 +25,7 @@ public class ProcessManagement {
 
     //set the instructions file
 //    private static File instructionSet = new File("testproc.txt");
-    private static File instructionSet = new File("test4.txt");
+    private static File instructionSet = new File("test2.txt");
 
     public static Object lock =new Object();
 
@@ -74,7 +74,16 @@ public class ProcessManagement {
                 //redirect as required, as long as it isn't std.. redirect
                 if(i != null && i.isRunnable()){
                     if (!((i.getInputFile().toString()).equals("stdin"))) {
+                        //added stuff for z_stdin and sample
+                        if(((i.getInputFile().toString()).equals("z_stdin"))){
+                            File zs = new File(currentDirectory + "/z_stdin.txt");
+                            pb.redirectInput(zs);
+                        }else if(((i.getInputFile().toString()).equals("sample"))){
+                            File sample = new File(currentDirectory + "/sample.txt");
+                            pb.redirectInput(sample);
+                        }else{
                         pb.redirectInput(i.getInputFile());
+                        }
                     }
                     if (!(i.getOutputFile().toString().equals("stdout"))) {
                         pb.redirectOutput(i.getOutputFile());
