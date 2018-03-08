@@ -3,15 +3,14 @@ package com.example.assignment; /**
  */
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class ProcessGraphNode extends Thread{
+public class ProcessGraphNode {
 
     //point to all the parents
-    private ArrayList<ProcessGraphNode> parents=new ArrayList<>();
+    private ArrayList<ProcessGraphNode> parents = new ArrayList<>();
     //point to all the children
-    private ArrayList<ProcessGraphNode> children=new ArrayList<>();
+    private ArrayList<ProcessGraphNode> children = new ArrayList<>();
     //properties of ProcessGraphNode
     private int nodeId;
     private File inputFile;
@@ -21,17 +20,19 @@ public class ProcessGraphNode extends Thread{
     private boolean executed;
 
 
-    public ProcessGraphNode(int nodeId ) {
+    public ProcessGraphNode(int nodeId) {
         this.nodeId = nodeId;
-        this.runnable=false;
-        this.executed=false;
+        this.runnable = false;
+        this.executed = false;
     }
 
     public void setRunnable() {
         this.runnable = true;
     }
 
-    public void setNotRunable() {this.runnable = false;}
+    public void setNotRunable() {
+        this.runnable = false;
+    }
 
     public void setExecuted() {
         this.executed = true;
@@ -45,17 +46,18 @@ public class ProcessGraphNode extends Thread{
         return executed;
     }
 
-    public void addChild(ProcessGraphNode child){
-        if (!children.contains(child)){
+    public void addChild(ProcessGraphNode child) {
+        if (!children.contains(child)) {
             children.add(child);
         }
     }
 
-    public void addParent(ProcessGraphNode parent){
-        if (!parents.contains(parent)){
+    public void addParent(ProcessGraphNode parent) {
+        if (!parents.contains(parent)) {
             parents.add(parent);
         }
     }
+
     public void setInputFile(File inputFile) {
         this.inputFile = inputFile;
     }
@@ -92,60 +94,61 @@ public class ProcessGraphNode extends Thread{
         return nodeId;
     }
 
-    public synchronized boolean allParentsExecuted(){
-        boolean ans=true;
+    public synchronized boolean allParentsExecuted() {
+        boolean ans = true;
         for (ProcessGraphNode child : this.getChildren()) {
             if (child.isExecuted()) {
                 return false;
             }
         }
-        for (ProcessGraphNode parent:this.getParents()) {
+        for (ProcessGraphNode parent : this.getParents()) {
             if (!parent.isExecuted())
-                ans=false;
+                ans = false;
         }
 
         return ans;
     }
 
     // Here is a function to check all parents have been executed
-    public boolean myParentExecuted(){
-        boolean ans=true;
-        for (ProcessGraphNode parent:this.getParents()) {
+    public boolean myParentExecuted() {
+        boolean ans = true;
+        for (ProcessGraphNode parent : this.getParents()) {
             if (!parent.isExecuted())
-                ans=false;
+                ans = false;
         }
 
         return ans;
     }
+}
 
     // Here is a function to run the program
-    @Override
-    public void run(){
+//    public void run(ProcessBuilder pb){
+//
+//        ProcessBuilder builder = new ProcessBuilder();
+//        builder.directory = cu
+//        Process p = null;
+//
+//
+//        if(!getInputFile().equals("stdin")){
+//            builder.redirectInput(this.inputFile);
+//        }else{
+//            //what to do for stdin
+//        }
+//
+//        if(!getOutputFile().equals("stdout")){
+//            builder.redirectOutput(this.outputFile);
+//        }else{
+//            //what to do for stdout
+//        }
+//
+//        try {
+//            p = builder.start();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
 
-        ProcessBuilder builder = new ProcessBuilder(this.command.split(" "));
-        Process p = null;
 
-
-        if(!getInputFile().equals("stdin")){
-            builder.redirectInput(this.inputFile);
-        }else{
-            //what to do for stdin
-        }
-
-        if(!getOutputFile().equals("stdout")){
-            builder.redirectOutput(this.outputFile);
-        }else{
-            //what to do for stdout
-        }
-
-        try {
-            p = builder.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-        setExecuted();
-    }
-}
+//        setExecuted();
+//    }
+//}

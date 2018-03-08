@@ -11,6 +11,7 @@ package com.example.assignment;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ProcessManagement {
@@ -24,7 +25,7 @@ public class ProcessManagement {
 
     //set the instructions file
 //    private static File instructionSet = new File("testproc.txt");
-    private static File instructionSet = new File("test1.txt");
+    private static File instructionSet = new File("test4.txt");
 
     public static Object lock =new Object();
 
@@ -34,6 +35,11 @@ public class ProcessManagement {
         ParseFile.generateGraph(new File(currentDirectory + "/"+ instructionSet));
 
         // Print the graph information
+        for(ProcessGraphNode node:ProcessGraph.nodes){
+            for(ProcessGraphNode child:node.getChildren()){
+                child.addParent(node);
+            }
+        }
         ProcessGraph.printGraph();
 
 	// WRITE YOUR CODE
@@ -51,34 +57,68 @@ public class ProcessManagement {
 
         boolean allE = false;
 
+        //Declare process builder outside of while loop and set it's directory
+        ProcessBuilder pb= new ProcessBuilder();
+        pb.directory(currentDirectory);
+
+        ArrayList<ProcessGraphNode> runnableNodes;
+
         while(allE == false){
             //check if all nodes are executed
             allE = areAllExecuted();
 
             //here is a function to decide whether a node is runnable & make a list
-            ArrayList<ProcessGraphNode> runnableNodes = setRunnables();
+            runnableNodes = setRunnables();
 
-            //run node if runnable
             for(ProcessGraphNode i : runnableNodes){
-                //make a thread for each
-                //then do run for each --- this can be put in process graph node
-                //then end?
-                if(i != null){
-                    i.start();
+                //redirect as required, as long as it isn't std.. redirect
+                if(i != null && i.isRunnable()){
+                    if (!((i.getInputFile().toString()).equals("stdin"))) {
+                        pb.redirectInput(i.getInputFile());
+                    }
+                    if (!(i.getOutputFile().toString().equals("stdout"))) {
+                        pb.redirectOutput(i.getOutputFile());
+                    }
+
+                    String[] command = {"bash","-c",i.getCommand().toString()};//curr.getCommand().toString()
+                    pb.command(command);
+                    try {
+                        Process p=pb.start();
+                        p.waitFor();
+                        i.setExecuted();
+                        i.setNotRunable();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
                 }
 
             }
+//
+//            //run node if runnable
+//            for(ProcessGraphNode i : runnableNodes){
+//                //make a thread for each
+//                //then do run for each --- this can be put in process graph node
+//                //then end?
+//                if(i != null){
+//                    i.start();
+//                }
+//
+//            }
+//
+//            for(ProcessGraphNode i : runnableNodes){
+//                //make a thread for each
+//                //then do run for each --- this can be put in process graph node
+//                //then end?
+//
+//
+//                if(i != null){
+//                    i.join();
+//                }
+//            }
 
-            for(ProcessGraphNode i : runnableNodes){
-                //make a thread for each
-                //then do run for each --- this can be put in process graph node
-                //then end?
 
-
-                if(i != null){
-                    i.join();
-                }
-            }
 
 
 
@@ -95,11 +135,6 @@ public class ProcessManagement {
         ProcessGraph.printGraph();
 
 
-                //mark all the runnable nodes
-	        // WRITE YOUR CODE
-
-                //run the node if it is runnable
-	        // WRITE YOUR CODE
 
         System.out.println("All process finished successfully");
     }
