@@ -19,14 +19,16 @@ public class ProcessManagement {
 
 
     //set the working directory
-//    private static File currentDirectory = new File("/home/jit/progassignment1/java/");
+
 
     static String myCurrentDir = System.getProperty("user.dir");
-//    private static File currentDirectory = new File("/Users/Caffae/GitHub/Labs/Assignment/src/main/java/com/example/assignment");
+
     private static File currentDirectory = new File(myCurrentDir);
 
     //set the instructions file
-    private static File instructionSet = new File("testproc.txt");
+        private static File instructionSet = new File("testproc.txt");
+
+
 //    private static File instructionSet = new File("graph-file2");
 
     public static Object lock =new Object();
@@ -57,8 +59,7 @@ public class ProcessManagement {
         ArrayList<ProcessGraphNode> runnableNodes;
 
         while(allE == false){
-            //check if all nodes are executed
-            allE = areAllExecuted();
+
 
             //here is a function to decide whether a node is runnable & make a list of runnable nodes
             runnableNodes = setRunnables();
@@ -90,7 +91,12 @@ public class ProcessManagement {
 
                 }
 
+
+
             }
+
+            //check if all nodes are executed
+            allE = areAllExecuted();
 
         }
 
@@ -99,7 +105,6 @@ public class ProcessManagement {
 
 
 
-        System.out.println("All process finished successfully");
     }
 
 
