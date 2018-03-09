@@ -1,14 +1,13 @@
 # CEJavaProgAssignment
-
+```java
 /*
 *  Programming Assignment 1
 *  Author : Wang Yee Lin Pamela, Tan Jun Hui Augustine
 ∗ ID: 1002367, 1002158
 ∗ Date: 03/03/2018
 *
-*
 * */
-
+```
 ## Purpose of the program
 The purpose of this program is to execute a group of programs that have control and data dependencies on each other in the correct order.
 
